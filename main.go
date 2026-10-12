@@ -49,6 +49,27 @@ func main() {
 		w.Write([]byte("Cookie получена сервером: " + cookie.Value))
 	})
 
+	mux.HandleFunc("/api/cookie/clear", func(w http.ResponseWriter, r *http.Request) {
+		if r.Method != http.MethodPost {
+			http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
+			return
+		}
+
+		for _, cookie := range r.Cookies() {
+			http.SetCookie(w, &http.Cookie{
+				Name:     cookie.Name,
+				Value:    "",
+				Path:     "/",
+				HttpOnly: true,
+				SameSite: http.SameSiteLaxMode,
+				MaxAge:   -1,
+			})
+		}
+
+		w.Header().Set("Content-Type", "text/plain; charset=utf-8")
+		w.Write([]byte("Все cookies успешно очищены сервером"))
+	})
+
 	mux.HandleFunc("/api/cookie/delete", func(w http.ResponseWriter, r *http.Request) {
 		if r.Method != http.MethodPost {
 			http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)

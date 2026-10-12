@@ -41,6 +41,7 @@ function initCookies() {
   const setButton = $('cookie-set');
   const checkButton = $('cookie-check');
   const deleteButton = $('cookie-delete');
+  const clearButton = $('cookie-clear');
 
   if (!setButton || !checkButton || !deleteButton) {
     return;
@@ -91,6 +92,23 @@ function initCookies() {
     try {
       const response = await fetch(
           '/api/cookie/delete', {method: 'POST', credentials: 'same-origin'});
+
+      const message = await response.text();
+
+      if (!response.ok) {
+        throw new Error(message);
+      }
+
+      showResult(resultId, message);
+    } catch (error) {
+      showResult(resultId, `Ошибка: ${error.message}`, true);
+    }
+  });
+
+  clearButton.addEventListener('click', async () => {
+    try {
+      const response = await fetch(
+          '/api/cookie/clear', {method: 'POST', credentials: 'same-origin'});
 
       const message = await response.text();
 
@@ -465,6 +483,7 @@ async function initCacheAPI() {
   const deleteButton = $('cache-delete');
   const urlInput = $('cache-url');
   const textInput = $('cache-text');
+  const clearButton = $('cache-clear');
 
   if (!saveButton || !readButton || !deleteButton || !urlInput || !textInput) {
     return;
@@ -541,6 +560,22 @@ async function initCacheAPI() {
           'cache-result',
           deleted ? `Запись "${customUrl}" удалена из кэша.` :
                     `Запись "${customUrl}" не найдена.`);
+    } catch (error) {
+      showResult('cache-result', `Ошибка: ${error.message}`, true);
+    }
+  });
+
+  clearButton.addEventListener('click', async () => {
+    if (!('caches' in window)) {
+      showResult('cache-result', 'Cache API не поддерживается.', true);
+      return;
+    }
+
+    try {
+      const deleted = await caches.delete(DEMO_CACHE_NAME);
+      showResult(
+          'cache-result',
+          deleted ? 'Демо кэш полностью очищен.' : 'Кэш уже пуст.');
     } catch (error) {
       showResult('cache-result', `Ошибка: ${error.message}`, true);
     }
