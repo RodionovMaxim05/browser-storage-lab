@@ -18,13 +18,18 @@ func main() {
 			return
 		}
 
+		cookieName := r.URL.Query().Get("name")
+		if cookieName == "" {
+			cookieName = "username"
+		}
+
 		cookieValue := r.URL.Query().Get("value")
 		if cookieValue == "" {
-			cookieValue = "example123"
+			cookieValue = "admin"
 		}
 
 		cookie := &http.Cookie{
-			Name:     "demo_session",
+			Name:     cookieName,
 			Value:    cookieValue,
 			Path:     "/",
 			HttpOnly: true,
@@ -35,18 +40,20 @@ func main() {
 		http.SetCookie(w, cookie)
 
 		w.Header().Set("Content-Type", "text/plain; charset=utf-8")
-		w.Write([]byte("HttpOnly cookie установлена"))
+		w.Write([]byte("Cookie '" + cookieName + "' установлена со значением: " + cookieValue))
 	})
 
 	mux.HandleFunc("/api/cookie/check", func(w http.ResponseWriter, r *http.Request) {
-		cookie, err := r.Cookie("demo_session")
+		cookieName := r.URL.Query().Get("name")
+
+		cookie, err := r.Cookie(cookieName)
 		if err != nil {
-			http.Error(w, "Cookie не найдена", http.StatusNotFound)
+			http.Error(w, "Cookie '"+cookieName+"' не найдена", http.StatusNotFound)
 			return
 		}
 
 		w.Header().Set("Content-Type", "text/plain; charset=utf-8")
-		w.Write([]byte("Cookie получена сервером: " + cookie.Value))
+		w.Write([]byte("Получена cookie '" + cookie.Name + "': " + cookie.Value))
 	})
 
 	mux.HandleFunc("/api/cookie/clear", func(w http.ResponseWriter, r *http.Request) {
@@ -76,8 +83,13 @@ func main() {
 			return
 		}
 
+		cookieName := r.URL.Query().Get("name")
+		if cookieName == "" {
+			cookieName = "demo_session"
+		}
+
 		http.SetCookie(w, &http.Cookie{
-			Name:     "demo_session",
+			Name:     cookieName,
 			Value:    "",
 			Path:     "/",
 			HttpOnly: true,
@@ -86,7 +98,7 @@ func main() {
 		})
 
 		w.Header().Set("Content-Type", "text/plain; charset=utf-8")
-		w.Write([]byte("Cookie удалена"))
+		w.Write([]byte("Cookie '" + cookieName + "' удалена"))
 	})
 
 	server := &http.Server{

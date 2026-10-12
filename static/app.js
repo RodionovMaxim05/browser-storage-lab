@@ -33,6 +33,19 @@ function formatDate(date) {
       .format(date);
 }
 
+function getCookieParams() {
+  const keyInput = $('cookie-key');
+  const valueInput = $('cookie-value');
+
+  const name = keyInput ? encodeURIComponent(keyInput.value.trim()) : '';
+  const value = valueInput ? encodeURIComponent(valueInput.value.trim()) : '';
+
+  let query = '';
+  if (name) query += `?name=${name}`;
+  if (value) query += `${query ? '&' : '?'}value=${value}`;
+  return query;
+}
+
 // 1. Cookies
 function initCookies() {
   const resultId = 'cookie-result';
@@ -49,22 +62,17 @@ function initCookies() {
 
   setButton.addEventListener('click', async () => {
     try {
-      const valueInput = $('cookie-value');
-      const customValue = valueInput ? valueInput.value.trim() : '';
-
-      const url = customValue ?
-          `/api/cookie/set?value=${encodeURIComponent(customValue)}` :
-          '/api/cookie/set';
-
-      const response =
-          await fetch(url, {method: 'POST', credentials: 'same-origin'});
+      const query = getCookieParams();
+      const response = await fetch(
+          `/api/cookie/set${query}`,
+          {method: 'POST', credentials: 'same-origin'});
       const message = await response.text();
 
       if (!response.ok) {
         throw new Error(message);
       }
 
-      showResult(resultId, `${message}\n`);
+      showResult(resultId, `${message}\nЗащищена флагом HttpOnly.`);
     } catch (error) {
       showResult(resultId, `Ошибка: ${error.message}`, true);
     }
@@ -72,17 +80,19 @@ function initCookies() {
 
   checkButton.addEventListener('click', async () => {
     try {
-      const response =
-          await fetch('/api/cookie/check', {credentials: 'same-origin'});
+      const keyInput = $('cookie-key');
+      const name = keyInput ? encodeURIComponent(keyInput.value.trim()) : '';
+      const query = name ? `?name=${name}` : '';
 
+      const response = await fetch(
+          `/api/cookie/check${query}`, {credentials: 'same-origin'});
       const message = await response.text();
 
       if (!response.ok) {
         throw new Error(message);
       }
 
-      showResult(
-          resultId, `${message}\nСервер получил cookie из HTTP-запроса.`);
+      showResult(resultId, `${message}\nСервер успешно прочитал cookie.`);
     } catch (error) {
       showResult(resultId, `Ошибка: ${error.message}`, true);
     }
@@ -90,9 +100,13 @@ function initCookies() {
 
   deleteButton.addEventListener('click', async () => {
     try {
-      const response = await fetch(
-          '/api/cookie/delete', {method: 'POST', credentials: 'same-origin'});
+      const keyInput = $('cookie-key');
+      const name = keyInput ? encodeURIComponent(keyInput.value.trim()) : '';
+      const query = name ? `?name=${name}` : '';
 
+      const response = await fetch(
+          `/api/cookie/delete${query}`,
+          {method: 'POST', credentials: 'same-origin'});
       const message = await response.text();
 
       if (!response.ok) {
@@ -417,6 +431,13 @@ async function initIndexedDB() {
           transaction.oncomplete = resolve;
           transaction.onerror = () => reject(transaction.error);
           transaction.onabort = () => reject(transaction.error);
+
+          //   const request = indexedDB.deleteDatabase(IDB_NAME);
+          //   request.onsuccess = () => resolve();
+          //   request.onerror = () => reject(request.error);
+          //   request.onblocked = () => {
+          //     resolve();
+          //   };
         });
 
         showResult('idb-result', 'Все заметки удалены.');

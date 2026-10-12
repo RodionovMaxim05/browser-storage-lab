@@ -65,16 +65,23 @@
 
                         <div class="demo-columns">
                             <div class="demo-inputs">
-                                <label for="cookie-value">Значение
+                                <label for="cookie-key">Имя (ключ)
+                                    cookie</label>
+                                <input id="cookie-key" type="text"
+                                    placeholder="Например, username">
+
+                                <label for="cookie-value"
+                                    style="margin-top: 10px;">Значение
                                     cookie</label>
                                 <input id="cookie-value" type="text"
-                                    placeholder="Например, theme=dark">
+                                    placeholder="Например, admin">
 
                                 <div class="demo-input-panel"
                                     style="margin-top: 15px;">
                                     <strong>Параметры</strong>
-                                    <p>Cookie создаётся сервером и защищена
-                                        флагом HttpOnly.</p>
+                                    <p>Имя и значение задаются пользователем, но
+                                        cookie создаётся сервером с флагом
+                                        HttpOnly.</p>
                                 </div>
                             </div>
 
