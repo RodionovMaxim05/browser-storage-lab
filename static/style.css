@@ -128,12 +128,6 @@ a {
     color: var(--primary);
 }
 
-.header-label {
-    color: var(--text-secondary);
-    font-size: 12px;
-    font-weight: 600;
-}
-
 /* Main container */
 
 .container {
@@ -642,12 +636,6 @@ tbody tr:hover {
         grid-template-columns: minmax(0, 1fr);
     }
 
-    .hero::after {
-        right: 25px;
-        width: 120px;
-        height: 120px;
-    }
-
     .card-description {
         min-height: 0;
     }
@@ -674,23 +662,10 @@ tbody tr:hover {
         height: 31px;
     }
 
-    .header-label {
-        max-width: 115px;
-        font-size: 10px;
-        text-align: right;
-    }
-
     .hero {
         margin: 22px 0 35px;
         padding: 30px 23px;
         border-radius: 18px;
-    }
-
-    .hero::after {
-        top: 22px;
-        right: -28px;
-        width: 105px;
-        height: 105px;
     }
 
     .hero h1 {
@@ -733,11 +708,6 @@ tbody tr:hover {
     th,
     td {
         padding: 12px 13px;
-    }
-
-    .experiment-icon {
-        width: 34px;
-        height: 34px;
     }
 
     .footer-inner {
