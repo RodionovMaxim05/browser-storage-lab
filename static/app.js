@@ -675,7 +675,7 @@ async function updateServiceWorkerStatus() {
       return;
     }
 
-    const lines = registrations.map((registration, index) => {
+    const lines = registrations.map((registration, _) => {
       let state = 'ожидает установки';
 
       if (registration.active) {
@@ -686,7 +686,7 @@ async function updateServiceWorkerStatus() {
         state = `ожидает активации (${registration.waiting.state})`;
       }
 
-      return `${index + 1}. ${state}\nScope: ${registration.scope}`;
+      return `${state}\nScope: ${registration.scope}`;
     });
 
     showResult('sw-result', lines.join('\n\n'));
