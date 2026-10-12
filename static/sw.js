@@ -1,6 +1,7 @@
 'use strict';
 
 const CACHE_NAME = 'browser-storage-lab-v1';
+const DEMO_CACHE_NAME = 'browser-storage-lab-demo-v1';
 
 const APP_SHELL = ['/', '/index.html', '/style.css', '/app.js'];
 
@@ -51,11 +52,17 @@ self.addEventListener('fetch', event => {
               return response;
             })
             .catch(async () => {
-              const cache = await caches.open(CACHE_NAME);
+              const mainCache = await caches.open(CACHE_NAME);
+              const demoCache = await caches.open(DEMO_CACHE_NAME);
 
-              return (await cache.match(request) ||
-                      await cache.match('/index.html') ||
-                      await cache.match('/')) ||
+              const customMatch = await demoCache.match(request);
+              if (customMatch) {
+                return customMatch;
+              }
+
+              return (await mainCache.match(request) ||
+                      await mainCache.match('/index.html') ||
+                      await mainCache.match('/')) ||
                   new Response(
                          'Приложение недоступно офлайн. Сначала откройте его онлайн.',
                          {

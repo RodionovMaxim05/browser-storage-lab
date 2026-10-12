@@ -35,10 +35,12 @@ function formatDate(date) {
 
 // 1. Cookies
 function initCookies() {
+  const resultId = 'cookie-result';
+  showResult(resultId, 'Cookie ещё не проверялась.');
+
   const setButton = $('cookie-set');
   const checkButton = $('cookie-check');
   const deleteButton = $('cookie-delete');
-  const resultId = 'cookie-result';
 
   if (!setButton || !checkButton || !deleteButton) {
     return;
@@ -46,19 +48,22 @@ function initCookies() {
 
   setButton.addEventListener('click', async () => {
     try {
-      const response = await fetch(
-          '/api/cookie/set', {method: 'POST', credentials: 'same-origin'});
+      const valueInput = $('cookie-value');
+      const customValue = valueInput ? valueInput.value.trim() : '';
 
+      const url = customValue ?
+          `/api/cookie/set?value=${encodeURIComponent(customValue)}` :
+          '/api/cookie/set';
+
+      const response =
+          await fetch(url, {method: 'POST', credentials: 'same-origin'});
       const message = await response.text();
 
       if (!response.ok) {
         throw new Error(message);
       }
 
-      showResult(
-          resultId,
-          `${message}\n` +
-              'Cookie имеет флаг HttpOnly и не читается через document.cookie.');
+      showResult(resultId, `${message}\n`);
     } catch (error) {
       showResult(resultId, `Ошибка: ${error.message}`, true);
     }
@@ -167,7 +172,7 @@ function initLocalStorage() {
       const value = localStorage.getItem(key);
 
       if (value === null) {
-        showResult('local-result', `Ключ "${key}" не найден.`, true);
+        showResult('local-result', `Ключ '${key}' не найден.`, true);
       } else {
         showResult('local-result', `Прочитано: ${key} = ${value}`);
       }
@@ -184,7 +189,7 @@ function initLocalStorage() {
       }
 
       localStorage.removeItem(key);
-      showResult('local-result', `Ключ "${key}" удалён.`);
+      showResult('local-result', `Ключ '${key}' удалён.`);
       renderLocalStorage();
     });
   }
@@ -197,6 +202,7 @@ function initLocalStorage() {
     });
   }
 
+  showResult('local-result', 'Готово к работе.');
   renderLocalStorage();
 }
 
@@ -267,7 +273,7 @@ function initSessionStorage() {
 
       if (value === null) {
         showResult(
-            'session-result', `Ключ "${key}" не найден в текущей вкладке.`,
+            'session-result', `Ключ '${key}' не найден в текущей вкладке.`,
             true);
       } else {
         showResult('session-result', `Прочитано: ${value}`);
@@ -285,7 +291,7 @@ function initSessionStorage() {
       }
 
       sessionStorage.removeItem(key);
-      showResult('session-result', `Ключ "${key}" удалён.`);
+      showResult('session-result', `Ключ '${key}' удалён.`);
       renderSessionStorage();
     });
   }
@@ -298,6 +304,7 @@ function initSessionStorage() {
     });
   }
 
+  showResult('session-result', 'Готово к работе.');
   renderSessionStorage();
 }
 
@@ -404,6 +411,7 @@ async function initIndexedDB() {
     });
   }
 
+  showResult('idb-result', 'Заметки будут сохранены в IndexedDB.');
   await renderIndexedDBNotes();
 }
 
@@ -449,14 +457,16 @@ async function renderIndexedDBNotes() {
 
 // 5. Cache API
 
-const CACHE_NAME = 'browser-storage-lab-demo-v1';
+const DEMO_CACHE_NAME = 'browser-storage-lab-demo-v1';
 
 async function initCacheAPI() {
   const saveButton = $('cache-save');
   const readButton = $('cache-read');
   const deleteButton = $('cache-delete');
+  const urlInput = $('cache-url');
+  const textInput = $('cache-text');
 
-  if (!saveButton || !readButton || !deleteButton) {
+  if (!saveButton || !readButton || !deleteButton || !urlInput || !textInput) {
     return;
   }
 
@@ -466,50 +476,71 @@ async function initCacheAPI() {
       return;
     }
 
+    const customUrl = urlInput.value.trim();
+    const customText = textInput.value;
+
+    if (!customUrl) {
+      showResult('cache-result', 'Введите URL или ключ для кэша.', true);
+      return;
+    }
+
     try {
-      const cache = await caches.open(CACHE_NAME);
-      const request = new Request('/demo-cached-message.txt');
+      const cache = await caches.open(DEMO_CACHE_NAME);
+      const request = new Request(customUrl);
       const response = new Response(
-          `Это демонстрационный ответ, сохранённый ${formatDate(new Date())}.`,
+          `Содержимое: ${customText}\nСохранено: ${formatDate(new Date())}`,
           {headers: {'Content-Type': 'text/plain; charset=utf-8'}});
 
       await cache.put(request, response);
 
       showResult(
-          'cache-result',
-          'Ответ сохранён в Cache API. Теперь попробуйте его прочитать.');
+          'cache-result', `Успешно сохранено в кэш!\nКлюч (URL): ${customUrl}`);
     } catch (error) {
       showResult('cache-result', `Ошибка: ${error.message}`, true);
     }
   });
 
   readButton.addEventListener('click', async () => {
+    const customUrl = urlInput.value.trim();
+    if (!customUrl) {
+      showResult('cache-result', 'Введите URL для поиска в кэше.', true);
+      return;
+    }
+
     try {
-      const cache = await caches.open(CACHE_NAME);
-      const response = await cache.match('/demo-cached-message.txt');
+      const cache = await caches.open(DEMO_CACHE_NAME);
+      const response = await cache.match(customUrl);
 
       if (!response) {
         showResult(
-            'cache-result', 'Запись не найдена. Сначала нажмите «Сохранить».',
+            'cache-result', `Запись по адресу "${customUrl}" не найдена.`,
             true);
         return;
       }
 
       const text = await response.text();
-      showResult('cache-result', `Прочитано из кэша:\n${text}`);
+      showResult(
+          'cache-result', `Прочитано из кэша для "${customUrl}":\n\n${text}`);
     } catch (error) {
       showResult('cache-result', `Ошибка: ${error.message}`, true);
     }
   });
 
   deleteButton.addEventListener('click', async () => {
+    const customUrl = urlInput.value.trim();
+    if (!customUrl) {
+      showResult('cache-result', 'Введите URL для удаления.', true);
+      return;
+    }
+
     try {
-      const cache = await caches.open(CACHE_NAME);
-      const deleted = await cache.delete('/demo-cached-message.txt');
+      const cache = await caches.open(DEMO_CACHE_NAME);
+      const deleted = await cache.delete(customUrl);
 
       showResult(
           'cache-result',
-          deleted ? 'Запись удалена из кэша.' : 'Запись не найдена.');
+          deleted ? `Запись "${customUrl}" удалена из кэша.` :
+                    `Запись "${customUrl}" не найдена.`);
     } catch (error) {
       showResult('cache-result', `Ошибка: ${error.message}`, true);
     }
@@ -575,6 +606,7 @@ async function initServiceWorker() {
     }
   });
 
+  showResult('sw-result', 'Статус Service Worker будет показан здесь.');
   await updateServiceWorkerStatus();
 }
 

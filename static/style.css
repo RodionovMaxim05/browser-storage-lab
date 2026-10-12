@@ -461,7 +461,7 @@ a {
     color: #626e87;
     font-size: 11px;
     line-height: 1.75;
-    white-space: normal;
+    white-space: pre-line;
     text-align: left;
 }
 

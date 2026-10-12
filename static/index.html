@@ -65,13 +65,16 @@
 
                         <div class="demo-columns">
                             <div class="demo-inputs">
-                                <div class="demo-input-panel">
+                                <label for="cookie-value">Значение
+                                    cookie</label>
+                                <input id="cookie-value" type="text"
+                                    placeholder="Например, theme=dark">
+
+                                <div class="demo-input-panel"
+                                    style="margin-top: 15px;">
                                     <strong>Параметры</strong>
-                                    <p>Cookie создаётся сервером и недоступна
-                                        для чтения из JavaScript благодаря флагу
-                                        HttpOnly.</p>
-                                    <span class="demo-hint">Срок действия: 30
-                                        минут</span>
+                                    <p>Cookie создаётся сервером и защищена
+                                        флагом HttpOnly.</p>
                                 </div>
                             </div>
 
@@ -92,9 +95,7 @@
                                 </div>
 
                                 <div class="result" id="cookie-result"
-                                    role="status"
-                                    aria-live="polite">
-                                    Cookie ещё не проверялась.
+                                    role="status" aria-live="polite">
                                 </div>
                             </div>
                         </div>
@@ -156,9 +157,7 @@
                                 </div>
 
                                 <div class="result" id="local-result"
-                                    role="status"
-                                    aria-live="polite">
-                                    Готово к работе.
+                                    role="status" aria-live="polite">
                                 </div>
 
                                 <div class="list-panel">
@@ -228,9 +227,7 @@
                                 </div>
 
                                 <div class="result" id="session-result"
-                                    role="status"
-                                    aria-live="polite">
-                                    Готово к работе.
+                                    role="status" aria-live="polite">
                                 </div>
 
                                 <div class="list-panel">
@@ -291,11 +288,8 @@
                                     </button>
                                 </div>
 
-                                <div class="result"
-                                    id="idb-result"
-                                    role="status"
-                                    aria-live="polite">Заметки будут сохранены в
-                                    IndexedDB.
+                                <div class="result" id="idb-result"
+                                    role="status" aria-live="polite">
                                 </div>
 
                                 <div class="list-panel">
@@ -335,14 +329,15 @@
 
                         <div class="demo-columns">
                             <div class="demo-inputs">
-                                <div class="demo-input-panel">
-                                    <strong>Данные для эксперимента</strong>
-                                    <p>Будет сохранён демонстрационный
-                                        HTTP-ответ с текстом, созданным в
-                                        браузере.</p>
-                                    <span class="demo-hint">Ключ:
-                                        /demo-cached-message.txt</span>
-                                </div>
+                                <label for="cache-url">URL / Ключ
+                                    запроса</label>
+                                <input id="cache-url" type="text"
+                                    placeholder="/api/custom-data или /page.html">
+
+                                <label for="cache-text">Текст
+                                    HTTP-ответа</label>
+                                <textarea id="cache-text" rows="3"
+                                    placeholder="Введите текст, который вернет кэш..."></textarea>
                             </div>
 
                             <div class="demo-actions">
@@ -362,9 +357,7 @@
                                 </div>
 
                                 <div class="result" id="cache-result"
-                                    role="status"
-                                    aria-live="polite">
-                                    Сначала сохраните демонстрационный ответ.
+                                    role="status" aria-live="polite">
                                 </div>
                             </div>
                         </div>
@@ -424,7 +417,6 @@
 
                                 <div class="result" id="sw-result" role="status"
                                     aria-live="polite">
-                                    Статус Service Worker будет показан здесь.
                                 </div>
                             </div>
                         </div>

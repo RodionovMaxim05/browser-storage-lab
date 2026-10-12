@@ -18,9 +18,14 @@ func main() {
 			return
 		}
 
+		cookieValue := r.URL.Query().Get("value")
+		if cookieValue == "" {
+			cookieValue = "example123"
+		}
+
 		cookie := &http.Cookie{
 			Name:     "demo_session",
-			Value:    "example123",
+			Value:    cookieValue,
 			Path:     "/",
 			HttpOnly: true,
 			SameSite: http.SameSiteLaxMode,
