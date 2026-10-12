@@ -1,0 +1,507 @@
+<!DOCTYPE html>
+<html lang="ru">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta
+            name="description"
+            content="Интерактивная лаборатория браузерных хранилищ данных">
+        <title>Browser Storage Lab</title>
+        <link rel="stylesheet" href="/style.css">
+        <script src="/app.js" defer></script>
+    </head>
+    <body>
+        <header class="site-header">
+            <div class="header-inner">
+                <a class="brand" href="/"
+                    aria-label="Browser Storage Lab — главная">
+                    <span class="brand-icon">B</span>
+                    <span>Browser Storage <span
+                            class="brand-light">Lab</span></span>
+                </a>
+            </div>
+        </header>
+
+        <main class="container">
+            <section class="hero">
+                <h1>Виды <span>локального хранилища</span><br>данных в
+                    браузере</h1>
+
+                <p class="hero-description">
+                    6 технологий хранения данных в веб-приложениях
+                </p>
+            </section>
+
+            <section class="section-heading">
+                <div>
+                    <h2>Практическая часть</h2>
+                </div>
+            </section>
+
+            <div class="storage-grid">
+
+                <!-- 1. Cookies -->
+                <section class="storage-card" id="cookies">
+                    <div class="card-top">
+                        <div class="card-icon icon-orange">C</div>
+                        <span class="card-number">01 / HTTP</span>
+                    </div>
+
+                    <h3>Cookies</h3>
+
+                    <div class="info-pills">
+                        <span>HTTP</span>
+                        <span>HttpOnly</span>
+                        <span>SameSite</span>
+                    </div>
+
+                    <p class="card-description">
+                        Небольшие данные, которые браузер может автоматически
+                        отправлять серверу вместе с HTTP-запросами.
+                    </p>
+
+                    <div class="card-demo">
+                        <p class="demo-label">УПРАВЛЕНИЕ COOKIE</p>
+
+                        <div class="demo-columns">
+                            <div class="demo-inputs">
+                                <div class="demo-input-panel">
+                                    <strong>Параметры</strong>
+                                    <p>Cookie создаётся сервером и недоступна
+                                        для чтения из JavaScript благодаря флагу
+                                        HttpOnly.</p>
+                                    <span class="demo-hint">Срок действия: 30
+                                        минут</span>
+                                </div>
+                            </div>
+
+                            <div class="demo-actions">
+                                <div class="button-stack">
+                                    <button class="button button-primary"
+                                        id="cookie-set" type="button">
+                                        Установить cookie
+                                    </button>
+                                    <button class="button button-secondary"
+                                        id="cookie-check" type="button">
+                                        Проверить на сервере
+                                    </button>
+                                    <button class="button button-danger"
+                                        id="cookie-delete" type="button">
+                                        Удалить cookie
+                                    </button>
+                                </div>
+
+                                <div class="result" id="cookie-result"
+                                    role="status"
+                                    aria-live="polite">
+                                    Cookie ещё не проверялась.
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- 2. LocalStorage -->
+                <section class="storage-card" id="localstorage">
+                    <div class="card-top">
+                        <div class="card-icon icon-blue">L</div>
+                        <span class="card-number">02 / KEY-VALUE</span>
+                    </div>
+
+                    <h3>LocalStorage</h3>
+
+                    <div class="info-pills">
+                        <span>Постоянное</span>
+                        <span>Строки</span>
+                        <span>Синхронное API</span>
+                    </div>
+
+                    <p class="card-description">
+                        Простое хранилище пар «ключ — значение», сохраняющее
+                        данные между перезагрузками страницы.
+                    </p>
+
+                    <div class="card-demo">
+                        <p class="demo-label">СОХРАНЕНИЕ ДАННЫХ</p>
+
+                        <div class="demo-columns">
+                            <div class="demo-inputs">
+                                <label for="local-key">Ключ</label>
+                                <input id="local-key" type="text"
+                                    placeholder="Например, username">
+
+                                <label for="local-value">Значение</label>
+                                <input id="local-value" type="text"
+                                    placeholder="Введите значение">
+                            </div>
+
+                            <div class="demo-actions">
+                                <div class="button-grid">
+                                    <button class="button button-primary"
+                                        id="local-save" type="button">
+                                        Сохранить
+                                    </button>
+                                    <button class="button button-secondary"
+                                        id="local-read" type="button">
+                                        Прочитать
+                                    </button>
+                                    <button class="button button-secondary"
+                                        id="local-delete" type="button">
+                                        Удалить ключ
+                                    </button>
+                                    <button class="button button-danger"
+                                        id="local-clear" type="button">
+                                        Очистить всё
+                                    </button>
+                                </div>
+
+                                <div class="result" id="local-result"
+                                    role="status"
+                                    aria-live="polite">
+                                    Готово к работе.
+                                </div>
+
+                                <div class="list-panel">
+                                    <div class="list-heading">Текущие
+                                        записи</div>
+                                    <ul id="local-list" class="data-list">
+                                        <li>Загрузка...</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- 3. SessionStorage -->
+                <section class="storage-card" id="sessionstorage">
+                    <div class="card-top">
+                        <div class="card-icon icon-purple">S</div>
+                        <span class="card-number">03 / TAB SESSION</span>
+                    </div>
+
+                    <h3>SessionStorage</h3>
+
+                    <div class="info-pills">
+                        <span>Вкладка</span>
+                        <span>Строки</span>
+                        <span>Сессионное</span>
+                    </div>
+
+                    <p class="card-description">
+                        Хранит данные в пределах сессии страницы. Обычно данные
+                        изолированы между вкладками одного сайта.
+                    </p>
+
+                    <div class="card-demo">
+                        <p class="demo-label">ДАННЫЕ ТЕКУЩЕЙ ВКЛАДКИ</p>
+
+                        <div class="demo-columns">
+                            <div class="demo-inputs">
+                                <label for="session-key">Ключ</label>
+                                <input id="session-key" type="text"
+                                    placeholder="Например, step">
+
+                                <label for="session-value">Значение</label>
+                                <input id="session-value" type="text"
+                                    placeholder="Введите значение">
+                            </div>
+
+                            <div class="demo-actions">
+                                <div class="button-grid">
+                                    <button class="button button-primary"
+                                        id="session-save" type="button">
+                                        Сохранить
+                                    </button>
+                                    <button class="button button-secondary"
+                                        id="session-read" type="button">
+                                        Прочитать
+                                    </button>
+                                    <button class="button button-secondary"
+                                        id="session-delete" type="button">
+                                        Удалить ключ
+                                    </button>
+                                    <button class="button button-danger"
+                                        id="session-clear" type="button">
+                                        Очистить всё
+                                    </button>
+                                </div>
+
+                                <div class="result" id="session-result"
+                                    role="status"
+                                    aria-live="polite">
+                                    Готово к работе.
+                                </div>
+
+                                <div class="list-panel">
+                                    <div class="list-heading">Текущие
+                                        записи</div>
+                                    <ul id="session-list" class="data-list">
+                                        <li>Загрузка...</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- 4. IndexedDB -->
+                <section class="storage-card" id="indexeddb">
+                    <div class="card-top">
+                        <div class="card-icon icon-green">I</div>
+                        <span class="card-number">04 / DATABASE</span>
+                    </div>
+
+                    <h3>IndexedDB</h3>
+
+                    <div class="info-pills">
+                        <span>Объекты</span>
+                        <span>Асинхронное API</span>
+                        <span>Индексы</span>
+                    </div>
+
+                    <p class="card-description">
+                        Асинхронная браузерная база данных для структурированных
+                        объектов и больших объёмов клиентских данных.
+                    </p>
+
+                    <div class="card-demo">
+                        <p class="demo-label">БАЗА ЗАМЕТОК</p>
+
+                        <div class="demo-columns">
+                            <div class="demo-inputs">
+                                <label for="idb-text">Текст заметки</label>
+                                <textarea id="idb-text" rows="3"
+                                    placeholder="Напишите что-нибудь для сохранения..."></textarea>
+                            </div>
+
+                            <div class="demo-actions">
+                                <div class="button-stack">
+                                    <button class="button button-primary"
+                                        id="idb-save" type="button">
+                                        Сохранить заметку
+                                    </button>
+                                    <button class="button button-secondary"
+                                        id="idb-list" type="button">
+                                        Обновить список
+                                    </button>
+                                    <button class="button button-danger"
+                                        id="idb-clear" type="button">
+                                        Удалить все заметки
+                                    </button>
+                                </div>
+
+                                <div class="result"
+                                    id="idb-result"
+                                    role="status"
+                                    aria-live="polite">Заметки будут сохранены в
+                                    IndexedDB.
+                                </div>
+
+                                <div class="list-panel">
+                                    <div class="list-heading">Сохранённые
+                                        заметки</div>
+                                    <ul id="idb-list-output" class="data-list">
+                                        <li>Загрузка...</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- 5. Cache API -->
+                <section class="storage-card" id="cacheapi">
+                    <div class="card-top">
+                        <div class="card-icon icon-cyan">C</div>
+                        <span class="card-number">05 / REQUEST CACHE</span>
+                    </div>
+
+                    <h3>Cache API</h3>
+
+                    <div class="info-pills">
+                        <span>Request</span>
+                        <span>Response</span>
+                        <span>Офлайн</span>
+                    </div>
+
+                    <p class="card-description">
+                        Позволяет сохранять пары Request/Response и повторно
+                        использовать ответы без нового обращения к серверу.
+                    </p>
+
+                    <div class="card-demo">
+                        <p class="demo-label">КЭШ HTTP-ОТВЕТА</p>
+
+                        <div class="demo-columns">
+                            <div class="demo-inputs">
+                                <div class="demo-input-panel">
+                                    <strong>Данные для эксперимента</strong>
+                                    <p>Будет сохранён демонстрационный
+                                        HTTP-ответ с текстом, созданным в
+                                        браузере.</p>
+                                    <span class="demo-hint">Ключ:
+                                        /demo-cached-message.txt</span>
+                                </div>
+                            </div>
+
+                            <div class="demo-actions">
+                                <div class="button-stack">
+                                    <button class="button button-primary"
+                                        id="cache-save" type="button">
+                                        Сохранить ответ
+                                    </button>
+                                    <button class="button button-secondary"
+                                        id="cache-read" type="button">
+                                        Прочитать из кэша
+                                    </button>
+                                    <button class="button button-danger"
+                                        id="cache-delete" type="button">
+                                        Удалить из кэша
+                                    </button>
+                                </div>
+
+                                <div class="result" id="cache-result"
+                                    role="status"
+                                    aria-live="polite">
+                                    Сначала сохраните демонстрационный ответ.
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- 6. Service Worker -->
+                <section class="storage-card" id="serviceworker">
+                    <div class="card-top">
+                        <div class="card-icon icon-pink">W</div>
+                        <span class="card-number">06 / BACKGROUND</span>
+                    </div>
+
+                    <h3>Service Worker</h3>
+
+                    <div class="info-pills">
+                        <span>Fetch</span>
+                        <span>Офлайн-режим</span>
+                        <span>Отдельный поток</span>
+                    </div>
+
+                    <p class="card-description">
+                        Фоновый обработчик событий браузера, способный
+                        перехватывать
+                        сетевые запросы и использовать Cache API.
+                    </p>
+
+                    <div class="card-demo">
+                        <p class="demo-label">УПРАВЛЕНИЕ SERVICE WORKER</p>
+
+                        <div class="demo-columns">
+                            <div class="demo-inputs">
+                                <div class="demo-input-panel">
+                                    <strong>Регистрация обработчика</strong>
+                                    <p>Service Worker управляет обработкой
+                                        запросов и может отдавать ресурсы из
+                                        Cache API.</p>
+                                    <span class="demo-hint">Файл: /sw.js</span>
+                                </div>
+                            </div>
+
+                            <div class="demo-actions">
+                                <div class="button-stack">
+                                    <button class="button button-primary"
+                                        id="sw-register" type="button">
+                                        Зарегистрировать
+                                    </button>
+                                    <button class="button button-secondary"
+                                        id="sw-status" type="button">
+                                        Проверить статус
+                                    </button>
+                                    <button class="button button-danger"
+                                        id="sw-unregister" type="button">
+                                        Отменить регистрацию
+                                    </button>
+                                </div>
+
+                                <div class="result" id="sw-result" role="status"
+                                    aria-live="polite">
+                                    Статус Service Worker будет показан здесь.
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </div>
+
+            <!-- Comparison -->
+            <section class="comparison-section">
+                <h2>Сравнение технологий</h2>
+
+                <div class="table-wrapper">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Технология</th>
+                                <th>Что хранит</th>
+                                <th>Срок хранения</th>
+                                <th>Доступ сервера</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><span
+                                        class="table-dot orange"></span>Cookies</td>
+                                <td>Небольшие значения</td>
+                                <td>Сессия или заданный срок</td>
+                                <td>Да, если подходят условия отправки</td>
+                            </tr>
+                            <tr>
+                                <td><span
+                                        class="table-dot blue"></span>LocalStorage</td>
+                                <td>Строки</td>
+                                <td>До удаления</td>
+                                <td>Нет, напрямую не отправляется</td>
+                            </tr>
+                            <tr>
+                                <td><span
+                                        class="table-dot purple"></span>SessionStorage</td>
+                                <td>Строки</td>
+                                <td>Сессия вкладки</td>
+                                <td>Нет, напрямую не отправляется</td>
+                            </tr>
+                            <tr>
+                                <td><span
+                                        class="table-dot green"></span>IndexedDB</td>
+                                <td>Структурированные данные</td>
+                                <td>До удаления или очистки браузером</td>
+                                <td>Нет, напрямую не отправляется</td>
+                            </tr>
+                            <tr>
+                                <td><span class="table-dot cyan"></span>Cache
+                                    API</td>
+                                <td>Request / Response</td>
+                                <td>До удаления или очистки браузером</td>
+                                <td>Нет, это браузерный кэш</td>
+                            </tr>
+                            <tr>
+                                <td><span class="table-dot pink"></span>Service
+                                    Worker</td>
+                                <td>Сам по себе не является хранилищем</td>
+                                <td>Регистрация может сохраняться между
+                                    сессиями</td>
+                                <td>Может обрабатывать запросы через Fetch
+                                    API</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+        </main>
+
+        <footer class="site-footer">
+            <div class="footer-inner">
+                <span>Browser Storage Lab</span>
+                <span>Современные технологии разработки бизнес-приложений</span>
+            </div>
+        </footer>
+    </body>
+</html>
